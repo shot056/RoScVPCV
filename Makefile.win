@@ -1,0 +1,54 @@
+# Project: RoScVPCV
+# Compiler: GCC Debug
+# Compiler Type: MingW 3
+# Makefile created by wxDev-C++ 6.10.2 on 05/12/08 16:15
+
+CPP       = g++.exe
+CC        = gcc.exe
+WINDRES   = windres.exe
+OBJ       = Objects/MingW/Capture.o Objects/MingW/CaptureThread.o Objects/MingW/ConfigDlg.o Objects/MingW/Protocol.o Objects/MingW/RoScVPCVApp.o Objects/MingW/RoScVPCVDlg.o Objects/MingW/ShortcutItem.o Objects/MingW/RoScVPCV_private.res
+LINKOBJ   = Objects/MingW/Capture.o Objects/MingW/CaptureThread.o Objects/MingW/ConfigDlg.o Objects/MingW/Protocol.o Objects/MingW/RoScVPCVApp.o Objects/MingW/RoScVPCVDlg.o Objects/MingW/ShortcutItem.o Objects/MingW/RoScVPCV_private.res
+LIBS      = -L"C:/Dev-Cpp/Lib" -mwindows -lwxmsw28 -lwxmsw28_gl -lwxtiff -lwxjpeg -lwxpng -lwxzlib -lwxregex -lwxexpat -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -lwinmm -lshell32 -lcomctl32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32 -lodbc32 -lopengl32 -lws2_32  -fmessage-length=0 -s -march=i686 
+INCS      = -I"include"
+CXXINCS   = -I"C:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include" -I"C:/Dev-Cpp/include/c++/3.4.2/backward" -I"C:/Dev-Cpp/include/c++/3.4.2/mingw32" -I"C:/Dev-Cpp/include/c++/3.4.2" -I"C:/Dev-Cpp/include" -I"C:/Dev-Cpp/" -I"C:/Dev-Cpp/include/common/wx/msw" -I"C:/Dev-Cpp/include/common/wx/generic" -I"C:/Dev-Cpp/include/common/wx/fl" -I"C:/Dev-Cpp/include/common/wx/gizmos" -I"C:/Dev-Cpp/include/common/wx/html" -I"C:/Dev-Cpp/include/common/wx/mmedia" -I"C:/Dev-Cpp/include/common/wx/net" -I"C:/Dev-Cpp/include/common/wx/ogl" -I"C:/Dev-Cpp/include/common/wx/plot" -I"C:/Dev-Cpp/include/common/wx/protocol" -I"C:/Dev-Cpp/include/common/wx/stc" -I"C:/Dev-Cpp/include/common/wx/svg" -I"C:/Dev-Cpp/include/common/wx/xml" -I"C:/Dev-Cpp/include/common/wx/xrc" -I"C:/Dev-Cpp/include/common/wx" -I"C:/Dev-Cpp/include/common"
+RCINCS    = --include-dir "C:/Dev-Cpp/include/common"
+BIN       = Output/MingW/RoScVPCV.exe
+DEFINES   =  -D__WXMSW__ -D__GNUWIN32__ -D__WIN95__
+CXXFLAGS  = $(CXXINCS) $(DEFINES) -fno-exceptions -fno-pcc-struct-return -fstrict-aliasing -Wall -D__WXMSW__ -D__GNUWIN32__ -D__WIN95__   -fexceptions -fexpensive-optimizations -O3 -fmessage-length=0 -march=i686
+CFLAGS    = $(INCS) $(DEFINES) -fno-exceptions -fno-pcc-struct-return -fstrict-aliasing -Wall -D__WXMSW__ -D__GNUWIN32__ -D__WIN95__   -fexceptions -fexpensive-optimizations -O3 -fmessage-length=0 -march=i686
+GPROF     = gprof.exe
+RM        = rm -f
+LINK      = g++.exe
+
+.PHONY: all all-before all-after clean clean-custom
+all: all-before $(BIN) all-after
+
+clean: clean-custom
+	$(RM) $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(LINK) $(LINKOBJ) -o "Output\MingW\RoScVPCV.exe" $(LIBS)
+
+Objects/MingW/Capture.o: $(GLOBALDEPS) Capture.cpp Capture.h
+	$(CPP) -c Capture.cpp -o Objects/MingW/Capture.o $(CXXFLAGS)
+
+Objects/MingW/CaptureThread.o: $(GLOBALDEPS) CaptureThread.cpp CaptureThread.h Capture.h Protocol.h RoProtocol.h RoScVPCVDlg.h ShortcutItem.h
+	$(CPP) -c CaptureThread.cpp -o Objects/MingW/CaptureThread.o $(CXXFLAGS)
+
+Objects/MingW/ConfigDlg.o: $(GLOBALDEPS) ConfigDlg.cpp ConfigDlg.h
+	$(CPP) -c ConfigDlg.cpp -o Objects/MingW/ConfigDlg.o $(CXXFLAGS)
+
+Objects/MingW/Protocol.o: $(GLOBALDEPS) Protocol.cpp Protocol.h
+	$(CPP) -c Protocol.cpp -o Objects/MingW/Protocol.o $(CXXFLAGS)
+
+Objects/MingW/RoScVPCVApp.o: $(GLOBALDEPS) RoScVPCVApp.cpp RoScVPCVApp.h CaptureThread.h Capture.h Protocol.h RoProtocol.h RoScVPCVDlg.h ShortcutItem.h RoScVPCVDlg.h
+	$(CPP) -c RoScVPCVApp.cpp -o Objects/MingW/RoScVPCVApp.o $(CXXFLAGS)
+
+Objects/MingW/RoScVPCVDlg.o: $(GLOBALDEPS) RoScVPCVDlg.cpp RoScVPCVDlg.h ShortcutItem.h
+	$(CPP) -c RoScVPCVDlg.cpp -o Objects/MingW/RoScVPCVDlg.o $(CXXFLAGS)
+
+Objects/MingW/ShortcutItem.o: $(GLOBALDEPS) ShortcutItem.cpp
+	$(CPP) -c ShortcutItem.cpp -o Objects/MingW/ShortcutItem.o $(CXXFLAGS)
+
+Objects/MingW/RoScVPCV_private.res: Objects/MingW/RoScVPCV_private.rc RoScVPCVApp.rc 
+	$(WINDRES) --input-format=rc -o Objects/MingW/RoScVPCV_private.res $(RCINCS) Objects/MingW/ROSCVP~1.RC -O coff
