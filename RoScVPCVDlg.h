@@ -89,6 +89,9 @@ public:
     // アイテム名テーブルをロードする 
     bool LoadItemNameTable(MyStringHash *hash);
     
+    // 場所移動 
+    bool PosMove();
+     
     // 画面描画 
     void RoScVPCVDlgPaint(wxPaintEvent& event);
 
@@ -106,9 +109,15 @@ public:
 
     // アイテムのアクティブ/ノンアクティブを設定しなおす 
     bool SetItemsActive();
-    
+     
     // NICの番号 
     int NICIndex;
+    
+    // ポジションX
+    int PositionX;
+    // ポジションY
+    int PositionY;
+
     
 private:
     //Do not add custom control declarations between 
@@ -133,6 +142,7 @@ private:
 private:
     void OnClose(wxCloseEvent& event);
     void CreateGUIControls();
+    
     // 現在ウィンドウ移動中かどうか 
     bool wndMoveMode;
     // ウィンドウ移動のために 
@@ -146,8 +156,8 @@ private:
     wxBitmap *bgbmp;
     // INIに設定されているスキン 
     wxString IniSkin;
-    // ショートカットリスト 0-8 一列目 9-17 二列目 18-26 三列目 
-    ShortcutItem *ItemList[27];
+    // ショートカットリスト 0-8 一列目 9-17 二列目 18-26 三列目 27-35 四列目 36-37 小さいの二つ
+    ShortcutItem *ItemList[38];
     // テスト用カウンター 
     int TestCount;
     // スキルID => スキル英名 

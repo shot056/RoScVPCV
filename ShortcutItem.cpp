@@ -2,7 +2,8 @@
 
 #include "ShortcutItem.h" // class's header file
 
-wxString count2key[] = {"Q", "W", "E", "R", "T", "Y", "U", "I", "O",
+wxString count2key[] = {"1", "2", "3", "4", "5", "6", "7", "8", "9",
+                        "Q", "W", "E", "R", "T", "Y", "U", "I", "O",
                         "A", "S", "D", "F", "G", "H", "J", "K", "L",
 //                        "Z", "X", "C", "V", "B", "N", "M", "LArrow", "RArrow"};
                         "Z", "X", "C", "V", "B", "N", "M", "<", ">"};
@@ -11,7 +12,7 @@ wxString count2key[] = {"Q", "W", "E", "R", "T", "Y", "U", "I", "O",
 ShortcutItem::ShortcutItem(int count, MyStringHash *SkillStrHash, MyStringHash *SkillNameHash, MyStringHash *ItemNameHash)
 {
     // insert your code here
-    
+
     SkillId2Str = SkillStrHash;
     SkillId2Name = SkillNameHash;
     ItemId2Name = ItemNameHash;
@@ -32,7 +33,7 @@ ShortcutItem::ShortcutItem(int count, MyStringHash *SkillStrHash, MyStringHash *
     KeyImage = new wxBitmap;
     if(!KeyImage->LoadFile(wxT(".\\KeyImage\\") + count2key[count] + wxT(".bmp"), wxBITMAP_TYPE_BMP)) {
         wxMessageBox(wxT(".\\KeyImage\\") + count2key[count] + wxT(".bmp")+wxT("がロードできません"),
-                     wxT("エラー"), wxOK); 
+                     wxT("エラー"), wxOK);
     }
     wxMask *KeyMask = new wxMask(*KeyImage, wxColor(0xff,0x00,0xff));
     KeyImage->SetMask(KeyMask);
@@ -51,10 +52,10 @@ bool ShortcutItem::SetItem(int type, int id, int count, bool active)
     Type   = type;
     ItemID = id;
     Count  = count;
-    
+
     wxString idstr;
     idstr.sprintf(wxT("%d"), ItemID);
-    // IDが0なのでクリアです 
+    // IDが0なのでクリアです
     if(id == 0) {
         if(ItemImage->IsOk()) {
             delete ItemImage;
@@ -64,19 +65,19 @@ bool ShortcutItem::SetItem(int type, int id, int count, bool active)
     }
     else {
         wxString ItemBmpPath;
-        // 0はアイテム 
+        // 0はアイテム
         if(Type == 0) {
             ItemBmpPath.sprintf(wxT(".\\0item\\%05d.bmp"), ItemID);
             Name = ItemId2Name->operator[](idstr);
         }
-        // 1はスキル 
+        // 1はスキル
         else if(Type == 1) {
             // nothing to do
             wxString SkillStr = SkillId2Str->operator[](idstr);
             ItemBmpPath.sprintf(wxT(".\\0skill\\%s.bmp"), SkillStr.MakeLower().c_str());
             Name = SkillId2Name->operator[](idstr);
         }
-    
+
 //        wxMessageBox(ItemBmpPath + wxT("をロードします"), wxT("メッセージ"), wxOK);
         ItemImage = new wxBitmap;
         wxLogMessage(wxT("        LoadFile : ")+ItemBmpPath);
@@ -88,7 +89,7 @@ bool ShortcutItem::SetItem(int type, int id, int count, bool active)
         }
         wxMask *ItemMask = new wxMask(*ItemImage, wxColor(0xff, 0x00, 0xff));
         ItemImage->SetMask(ItemMask);
-        
+
         isActive = active;
         /*
         wxImage image = ItemImage->ConvertToImage();
@@ -106,6 +107,8 @@ bool ShortcutItem::SetItem(int type, int id, int count, bool active)
 bool ShortcutItem::Draw(wxPaintDC *dc)
 {
     /* TODO (#1#): Implement ShortcutItem::Draw() */
+
+/*
     int NewPositionCount;
     if(PositionCount < 9) {
         NewPositionCount = PositionCount + 18;
@@ -115,7 +118,9 @@ bool ShortcutItem::Draw(wxPaintDC *dc)
     }
     int x = NewPositionCount % 9;
     int y = NewPositionCount / 9;
-    
+*/
+    int x = PositionCount % 9;
+    int y = PositionCount / 9;
     /*
     wxString str;
     str.sprintf(wxT("PositionCount = %d\nx = %d : y = %d"), PositionCount, x, y);
@@ -123,12 +128,12 @@ bool ShortcutItem::Draw(wxPaintDC *dc)
     */
     if(DrawFlag && ItemImage->IsOk()) {
         wxImage image = ItemImage->ConvertToImage();
-        
+
         if( !isActive ) {
             unsigned char mr = image.GetMaskRed(),
                           mg = image.GetMaskGreen(),
                           mb = image.GetMaskBlue();
-            
+
             image.InitAlpha();
             int i,j;
             for (i = 0; i < image.GetWidth(); i++) {
@@ -141,7 +146,7 @@ bool ShortcutItem::Draw(wxPaintDC *dc)
                                  mr, mg, mb,
                                  pr, pg, pb);
                     */
-                    // マスクカラーと同じじゃなければアルファを設定する 
+                    // マスクカラーと同じじゃなければアルファを設定する
                     if( !( mr == pr and mg == pg and mb == pb ) ) {
                         image.SetAlpha( i, j, 70 );
                     }
@@ -157,7 +162,7 @@ bool ShortcutItem::Draw(wxPaintDC *dc)
         CountStr.sprintf(wxT("%d"), Count);
         int count_base = (30 - CountStr.Length() * 6);
         if(Type == 1 && Count != 0) {
-            // スキルレベル等描画 
+            // スキルレベル等描画
             dc->SetFont(wxFont(8, wxDEFAULT, wxNORMAL, wxNORMAL, false));
             dc->SetTextForeground(wxColour(0x00, 0x00, 0x00));
             for( int bx = -1; bx < 2; bx ++ ) {
@@ -170,17 +175,17 @@ bool ShortcutItem::Draw(wxPaintDC *dc)
         }
     }
 
-    // キーコード描画 
+    // キーコード描画
     dc->SetTextForeground(wxT("ORANGE"));
     dc->SetFont(wxFont(14, wxMODERN , wxITALIC, wxBOLD, false));
     for( int bx = -1; bx < 2; bx ++ ) {
         for( int by = -1; by < 2; by ++ ) {
-            dc->DrawText(count2key[NewPositionCount], x * 29 + bx, y * 34 + by);
+            dc->DrawText(count2key[PositionCount], x * 29 + bx, y * 34 + by);
         }
     }
-    
+
     dc->SetTextForeground(wxColour(0xff,0x80,0x00));
-    dc->DrawText(count2key[NewPositionCount], x * 29, y * 34);
+    dc->DrawText(count2key[PositionCount], x * 29, y * 34);
 
 //    if(KeyImage->IsOk()) {
 //        dc->DrawBitmap(*KeyImage, x * 29 + 3, y * 34 + 3, true);

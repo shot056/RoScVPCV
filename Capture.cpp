@@ -201,7 +201,7 @@ BOOL Recv(unsigned char Buffer[MAX_RECV_SIZE],unsigned long *Len)
         }else{
             SetLastError(Error);
             return FALSE;
-        }    
+        }
     }
     return TRUE;
 }

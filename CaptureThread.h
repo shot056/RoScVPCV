@@ -5,13 +5,13 @@
 	#pragma hdrstop
 #endif
 
+
 #ifndef WX_PRECOMP
 	#include <wx/wx.h>
 #else
 	#include <wx/wxprec.h>
 	#include <wx/thread.h>
 #endif
-
 #include "Capture.h"
 #include "Protocol.h"
 #include "RoProtocol.h"

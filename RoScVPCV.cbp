@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="RoScVPCV" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/RoScVPCV" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-D__WXDEBUG__" />
+					<Add directory="$(#wx)/lib/gcc_lib/mswud" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="$(#wx)/lib/gcc_lib/mswud" />
+				</ResourceCompiler>
+				<Linker>
+					<Add library="wxmsw28ud_core" />
+					<Add library="wxbase28ud" />
+					<Add library="wxpngd" />
+					<Add library="wxzlibd" />
+					<Add library="wxregexd" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/RoScVPCV" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add directory="$(#wx)/lib/gcc_lib/mswu" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="$(#wx)/lib/gcc_lib/mswu" />
+				</ResourceCompiler>
+				<Linker>
+					<Add library="wxmsw28u_core" />
+					<Add library="wxbase28u" />
+					<Add library="wxpng" />
+					<Add library="wxzlib" />
+					<Add library="wxregex" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-pipe" />
+			<Add option="-mthreads" />
+			<Add option='[[if (GetCompilerFactory().GetCompilerVersionString(_T(&quot;gcc&quot;)) &gt;= _T(&quot;4.8.0&quot;)) print(_T(&quot;-Wno-unused-local-typedefs&quot;));]]' />
+			<Add option="-D__GNUWIN32__" />
+			<Add option="-D__WXMSW__" />
+			<Add directory="$(#wx)/include" />
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#wx)/include" />
+		</ResourceCompiler>
+		<Linker>
+			<Add option="-mthreads" />
+			<Add library="kernel32" />
+			<Add library="user32" />
+			<Add library="gdi32" />
+			<Add library="winspool" />
+			<Add library="comdlg32" />
+			<Add library="advapi32" />
+			<Add library="shell32" />
+			<Add library="ole32" />
+			<Add library="oleaut32" />
+			<Add library="uuid" />
+			<Add library="comctl32" />
+			<Add library="wsock32" />
+			<Add library="odbc32" />
+			<Add library="ws2_32" />
+			<Add directory="$(#wx)/lib/gcc_lib" />
+		</Linker>
+		<Unit filename="Capture.cpp" />
+		<Unit filename="Capture.h" />
+		<Unit filename="CaptureThread.cpp" />
+		<Unit filename="CaptureThread.h" />
+		<Unit filename="ConfigDlg.cpp" />
+		<Unit filename="ConfigDlg.h" />
+		<Unit filename="ConfigDlg.wxform" />
+		<Unit filename="Protocol.cpp" />
+		<Unit filename="Protocol.h" />
+		<Unit filename="RoProtocol.h" />
+		<Unit filename="RoScVPCVApp.cpp" />
+		<Unit filename="RoScVPCVApp.h" />
+		<Unit filename="RoScVPCVApp.rc">
+			<Option compilerVar="CPP" />
+		</Unit>
+		<Unit filename="RoScVPCVDlg.cpp" />
+		<Unit filename="RoScVPCVDlg.h" />
+		<Unit filename="RoScVPCVDlg.wxform" />
+		<Unit filename="ShortcutItem.cpp" />
+		<Unit filename="ShortcutItem.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

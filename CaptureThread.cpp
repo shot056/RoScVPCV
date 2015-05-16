@@ -23,7 +23,7 @@ void *CaptureThread::Entry()
     Buffer->CryptedFlag02A3 = false;
     Buffer->CryptedFlag02BD = false;
     Buffer->ReceivedFlag02BD = false;
-    
+
     while(roop_flag) {
         if(capture_flag) {
             wxThread::Sleep(0);
@@ -107,12 +107,12 @@ bool CaptureThread::StartCapture()
     else {
         Index = p_dlg->NICIndex;
     }
-    
+
     if( Index == -1 or Max <= Index ) {
         wxMessageBox(wxT("正しく選択してください。"), wxT("エラー"), wxOK);
         return false;
     }
-    
+
     unsigned long ip_address = AddressList[Index];
     {
         unsigned char *p = (unsigned char *)&ip_address;
@@ -174,7 +174,7 @@ void CaptureThread::ParsePacket(unsigned char *Packet, unsigned long Len, Packet
         // Ver_Lenのビットは0100XXXXなので、0100は全部0に XXXXの1だった部分だけが残る 
         int IpHdrLen = (pIpHdr->Ver_Len & 0x0F)*4; // IPヘッダの長さ 
         LP_PROTOCOL_TCP pTcpHdr = (LP_PROTOCOL_TCP)(p + IpHdrLen);
-        
+
         // SYNとかはバイバイ 
         if( (pTcpHdr->FLG & TH_SYN) != 0 ||
             (pTcpHdr->FLG & TH_FIN) != 0 ||
@@ -269,7 +269,7 @@ int CaptureThread::ParseNormalPacket(unsigned char *inPacket, unsigned long inLe
             // なんぞこれ？ しらないパケットｋｔｋｒ 
             return PACKET_STATE_ERROR;
         }
-        
+
         //        wxLogMessage(wxString::Format(wxT("Len = %d : RoLen = %d"), Len, RoLen));
         if( RoLen == -1 ) {
             // 4バイト以下は分割？ 
@@ -344,7 +344,22 @@ void CaptureThread::UsePacket(short int Type, unsigned char *Packet) {
             p_dlg->Refresh(false);
             break;
         }
-        // スキルリスト 
+        case 0x07D9 : {
+//            LP_RO_MESSAGE_02B9 msg = (LP_RO_MESSAGE_02B9)Packet;
+            wxLogMessage(wxT("case 0x07D9"));
+            Packet += 2;
+            for( int i = 0; i < 38; i ++ ) {
+                unsigned char *Flag = (unsigned char *)Packet;
+                Packet += 1;
+                LP_RO_MESSAGE_02B9_SHORTCUT shortcut = (LP_RO_MESSAGE_02B9_SHORTCUT)Packet;
+                wxLogMessage(wxString::Format(wxT("    %d: Flag=%d : ID=%d : Lv=%d"), i, (int)Flag[0], (int)(shortcut->Id), (int)(shortcut->Lv)));
+                p_dlg->SetShortcutItem(i, (int)Flag[0], (int)(shortcut->Id), (int)(shortcut->Lv));
+                Packet += 6;
+            }
+            p_dlg->Refresh(false);
+            break;
+        }
+        // スキルリスト
         case 0x010F : {
             wxLogMessage(wxT("case 0x010F"));
             LP_RO_MESSAGE_010F skill_header = (LP_RO_MESSAGE_010F)Packet;
@@ -509,10 +524,10 @@ bool CaptureThread::isRoMapServer(unsigned int Ip, short int Port) {
 //                                (i % 9) + 1,
 //                                i - (9 * i % 9),
 //                                Flag[0], ro_shortcut->Id, ro_shortcut->Lv);
-                        
+
 //                         unsigned char *sId = (unsigned char *)&(ro_shortcut->Id);
 //                         unsigned char *sLv = (unsigned char *)&(ro_shortcut->Lv);
-                        
+
 //                         printf("\tFlag=");
 //                         printf("%02X : %d", Flag[0], Flag[0]);
 //                         printf("\n");

@@ -36,7 +36,7 @@ BEGIN_EVENT_TABLE(RoScVPCVDlg,wxDialog)
 	EVT_MENU(wxID_ChangeSkin, RoScVPCVDlg::ChangeSkin)
 	EVT_MENU(wxID_StayOnTop, RoScVPCVDlg::ChangeStayOnTop)
 	////Manual Code End
-	
+
 	EVT_CLOSE(RoScVPCVDlg::OnClose)
 	EVT_LEFT_DOWN(RoScVPCVDlg::RoScVPCVDlgLeftDown)
 	EVT_LEFT_UP(RoScVPCVDlg::RoScVPCVDlgLeftUP)
@@ -51,13 +51,16 @@ RoScVPCVDlg::RoScVPCVDlg(wxWindow *parent, wxWindowID id, const wxString &title,
 {
     // ウィンドウ移動モードをfalseに 
     wndMoveMode = false;
-    
-    // NICIndexを初期化 
+
+    PositionX = 0;
+    PositionY = 0;
+
+    // NICIndexを初期化
     NICIndex = -1;
 
     // スキンを初期化 
     // IniSkin = wxT('');
-    
+
     // 本体設定の読み込み 
     if( !LoadMainIni() ) {
         wxMessageBox(wxT("設定の読み込みに失敗しました。"), wxT("エラー"), wxOK);
@@ -91,7 +94,7 @@ RoScVPCVDlg::RoScVPCVDlg(wxWindow *parent, wxWindowID id, const wxString &title,
                 }
                 else {
                     LoadItemNameTable(&ItemId2Name);
-                    for( int i = 0; i < 27; i ++ ) {
+                    for( int i = 0; i < 36; i ++ ) {
                         ItemList[i] = new ShortcutItem(i, &SkillId2Str, &SkillId2Name, &ItemId2Name);
                     }
                     CreateGUIControls();
@@ -288,6 +291,14 @@ bool RoScVPCVDlg::LoadMainIni()
             SetWindowStyleFlag(wxSTAY_ON_TOP);
         }
     }
+    {
+        long val_x = 0;
+        long val_y = 0;
+        MainSetting[wxT("PosX")].ToLong(&val_x);
+        MainSetting[wxT("PosY")].ToLong(&val_y);
+        PositionX = val_x;
+        PositionY = val_y;
+    }
     return true;
 }
 
@@ -304,6 +315,9 @@ bool RoScVPCVDlg::SaveMainIni()
     else {
         MainSetting[wxT("StayOnTop")] = wxT("0");
     }
+    MainSetting[wxT("PosX")] = wxString::Format(wxT("%d"), PositionX);
+    MainSetting[wxT("PosY")] = wxString::Format(wxT("%d"), PositionY);
+    
     wxString MainIniFile = wxT(".\\RoScVPCV.ini");
     SaveIni(&MainSetting, MainIniFile.c_str(), wxT("RoScVPCV"));
     return true;
@@ -459,7 +473,7 @@ void RoScVPCVDlg::Test(wxCommandEvent& WXUNUSED(event))
 
 bool RoScVPCVDlg::SetShortcutItem(int item_count, int type, int id, int count)
 {
-    if( item_count > 26) {
+    if( item_count > 38) {
         return false;
     }
     bool isActive = false;
@@ -518,7 +532,7 @@ bool RoScVPCVDlg::SkillIsActive(int id, int lv)
 
 bool RoScVPCVDlg::SetItemsActive()
 {
-    for( int i = 0; i < 27; i ++ ) {
+    for( int i = 0; i < 36; i ++ ) {
         bool active = false;
         if( ItemList[i]->GetType() == 0 ) {
             active = true;
@@ -627,6 +641,8 @@ void RoScVPCVDlg::RoScVPCVDlgMouseEvents(wxMouseEvent& event)
         win->GetPosition(&wnd_x, &wnd_y);
         int x = wnd_x + event.GetX() - last_x;
         int y = wnd_y + event.GetY() - last_y;
+        PositionX = x;
+        PositionY = y;
         win->Move(x, y);
     }
 }
@@ -641,21 +657,24 @@ void RoScVPCVDlg::RoScVPCVDlgPaint(wxPaintEvent& event)
     dc.DrawBitmap(*bgbmp, 0,   0,  true);
     dc.DrawBitmap(*bgbmp, 0,   34, true);
     dc.DrawBitmap(*bgbmp, 0,   68, true);
+    dc.DrawBitmap(*bgbmp, 0,   102, true);
     
     dc.SetTextForeground(wxColour(0x77, 0x77, 0x77));
     for( int x = -1; x < 2; x ++ ) {
         for( int y = -1; y < 2; y ++ ) {
+            dc.DrawText(wxT("4"), 268 + x, 13 + y);
             dc.DrawText(wxT("3"), 268 + x, 47 + y);
-            dc.DrawText(wxT("2"), 268 + x, 13 + y);
-            dc.DrawText(wxT("1"), 268 + x, 81 + y);
+            dc.DrawText(wxT("2"), 268 + x, 81 + y);
+            dc.DrawText(wxT("1"), 268 + x, 115 + y);
         }
     }
     dc.SetTextForeground(wxColour(0xff, 0xff, 0xff));
+    dc.DrawText(wxT("4"), 268, 13);
     dc.DrawText(wxT("3"), 268, 47);
-    dc.DrawText(wxT("2"), 268, 13);
-    dc.DrawText(wxT("1"), 268, 81);
+    dc.DrawText(wxT("2"), 268, 81);
+    dc.DrawText(wxT("1"), 268, 115);
     
-    for( int i = 0; i < 27; i ++ ) {
+    for( int i = 0; i < 36; i ++ ) {
         ItemList[i]->Draw(&dc);
     }
 }

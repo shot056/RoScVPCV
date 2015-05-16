@@ -21,6 +21,7 @@ bool RoScVPCVDlgApp::OnInit()
     RoScVPCVDlg* dialog = new RoScVPCVDlg(NULL, -1, wxT("RoScVPCV"), wxDefaultPosition, wxDefaultSize);
     SetTopWindow(dialog);
     dialog->Show(true);
+    dialog->Move(dialog->PositionX, dialog->PositionY);
     
     int PacketLength[9999];
     int MaxNum = 0;
