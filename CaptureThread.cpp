@@ -167,34 +167,34 @@ void CaptureThread::ParsePacket(unsigned char *Packet, unsigned long Len, Packet
 
     LP_PROTOCOL_IP pIpHdr = (LP_PROTOCOL_IP)p;
 
-    // TCPだったら 
+    // TCPだったら
     if( pIpHdr->Protocol == 6 ) {
-        // & はビット演算子 両方のビットが1だったときのみ1になる 
-        // 0x0Fは00001111なので、 
-        // Ver_Lenのビットは0100XXXXなので、0100は全部0に XXXXの1だった部分だけが残る 
-        int IpHdrLen = (pIpHdr->Ver_Len & 0x0F)*4; // IPヘッダの長さ 
+        // & はビット演算子 両方のビットが1だったときのみ1になる
+        // 0x0Fは00001111なので、
+        // Ver_Lenのビットは0100XXXXなので、0100は全部0に XXXXの1だった部分だけが残る
+        int IpHdrLen = (pIpHdr->Ver_Len & 0x0F)*4; // IPヘッダの長さ
         LP_PROTOCOL_TCP pTcpHdr = (LP_PROTOCOL_TCP)(p + IpHdrLen);
 
-        // SYNとかはバイバイ 
+        // SYNとかはバイバイ
         if( (pTcpHdr->FLG & TH_SYN) != 0 ||
             (pTcpHdr->FLG & TH_FIN) != 0 ||
             (pTcpHdr->FLG & TH_RST) != 0 ) {
             return;
         }
 
-        // ROのサーバじゃなかったら無視 
+        // ROのサーバじゃなかったら無視
         if( isRoServer(pIpHdr->SrcIp, htons(pTcpHdr->SrcPort)) ) {
-            // 今度はTCPヘッダの分だけポインタを移動してやる 
-            // pTcpHdr->Offsetを使うはず 
-//            printf("SrcPort=%05d : DstPort=%05d : ", htons(pTcpHdr->SrcPort), htons(pTcpHdr->DstPort)); 
-            // こんどはOffsetの前4ビットだけ残したい 
-//            printf("Of=%d : ", (pTcpHdr->Offset & ~0x0F)); 
-            // URGフラグ？ 0x20(00100000)でおｋ？ 
-//            printf("URGFLG=%d : ", (pTcpHdr->FLG & 0x20)); 
-//            printf("Urg=%d : ", pTcpHdr->Urgent); 
-//            printf("Len=%d : ", ntohs(pIpHdr->TotalLen)); 
+            // 今度はTCPヘッダの分だけポインタを移動してやる
+            // pTcpHdr->Offsetを使うはず
+//            printf("SrcPort=%05d : DstPort=%05d : ", htons(pTcpHdr->SrcPort), htons(pTcpHdr->DstPort));
+            // こんどはOffsetの前4ビットだけ残したい
+//            printf("Of=%d : ", (pTcpHdr->Offset & ~0x0F));
+            // URGフラグ？ 0x20(00100000)でおｋ？
+//            printf("URGFLG=%d : ", (pTcpHdr->FLG & 0x20));
+//            printf("Urg=%d : ", pTcpHdr->Urgent);
+//            printf("Len=%d : ", ntohs(pIpHdr->TotalLen));
             int TcpHdrLen = (pTcpHdr->Offset & ~0x0F) / 4 + pTcpHdr->Urgent;
-            // 接続先が変わった 
+            // 接続先が変わった
             if(Buffer->IpAddr != pIpHdr->SrcIp || Buffer->Port != htons(pTcpHdr->SrcPort)) {
                 Buffer->IpAddr = pIpHdr->SrcIp;
                 Buffer->Port = htons(pTcpHdr->SrcPort);
@@ -246,7 +246,7 @@ int CaptureThread::ParseNormalPacket(unsigned char *inPacket, unsigned long inLe
 
     Packet = LocalBuffer;
 
-    // バッファ分と今回分をくっ付ける 
+    // バッファ分と今回分をくっ付ける
     if( Buffer->Len > 0 ) {
         memcpy(Packet, Buffer->Packet, Buffer->Len);
     }
@@ -254,9 +254,9 @@ int CaptureThread::ParseNormalPacket(unsigned char *inPacket, unsigned long inLe
     Len = Buffer->Len + inLen;
     Buffer->Len = 0;
 
-    // たまってるパケットが切れるまでまわす 
+    // たまってるパケットが切れるまでまわす
     while(1) {
-        // 2以下は絶対分割？ 
+        // 2以下は絶対分割？
         if( Len < 2 ) {
             memcpy(Buffer->Packet, Packet, Len);
             Buffer->Len = Len;
@@ -266,23 +266,23 @@ int CaptureThread::ParseNormalPacket(unsigned char *inPacket, unsigned long inLe
         LP_RO_MESSAGE_TYPE roType = (LP_RO_MESSAGE_TYPE)Packet;
         //        wxLogMessage(wxString::Format(wxT("Type = %04X"), roType->Type));
         if( roType->Type >= MaxCodeNum || (RoLen = (int)PacketLengthTable[roType->Type]) == 0 ) {
-            // なんぞこれ？ しらないパケットｋｔｋｒ 
+            // なんぞこれ？ しらないパケットｋｔｋｒ
             return PACKET_STATE_ERROR;
         }
 
         //        wxLogMessage(wxString::Format(wxT("Len = %d : RoLen = %d"), Len, RoLen));
         if( RoLen == -1 ) {
-            // 4バイト以下は分割？ 
+            // 4バイト以下は分割？
             if( Len < 4 ) {
                 memcpy(Buffer->Packet, Packet, Len);
                 Buffer->Len = Len;
                 return PACKET_STATE_CONTINUE;
             }
-            // -1ってことはパケから長さ読むよ 
+            // -1ってことはパケから長さ読むよ
             RoLen = roType->Len;
         }
 
-        // パケがテーブルより短いから分割だよ 
+        // パケがテーブルより短いから分割だよ
         if( (int)Len < RoLen ) {
             memcpy(Buffer->Packet, Packet, Len);
             Buffer->Len = Len;
@@ -291,11 +291,11 @@ int CaptureThread::ParseNormalPacket(unsigned char *inPacket, unsigned long inLe
 
         switch(roType->Type) {
         case 0x02A3 : {
-            // 02A3暗号化の対処 
+            // 02A3暗号化の対処
             break;
         }
         case 0x02BD : {
-            // 02BD暗号化の対処 
+            // 02BD暗号化の対処
             break;
         }
         default : {
@@ -303,7 +303,7 @@ int CaptureThread::ParseNormalPacket(unsigned char *inPacket, unsigned long inLe
         }
         }
 
-        // パケ終わりー 
+        // パケ終わりー
         if( RoLen == (int)Len ) {
             return PACKET_STATE_END;
         }
@@ -328,7 +328,7 @@ void CaptureThread::UsePacket(short int Type, unsigned char *Packet) {
 //     case 0x0071 : {
 
 //     }
-        // ショートカットリスト 
+        // ショートカットリスト
         case 0x02B9 : {
 //            LP_RO_MESSAGE_02B9 msg = (LP_RO_MESSAGE_02B9)Packet;
             wxLogMessage(wxT("case 0x02B9"));
@@ -428,7 +428,7 @@ bool CaptureThread::isRoCharServer(unsigned int Ip, short int Port) {
     }
 }
 bool CaptureThread::isRoMapServer(unsigned int Ip, short int Port) {
-    if(Port == 5121) {
+    if(Port == 5121 || Port == 5122) {
         return true;
     }
     else {
@@ -479,12 +479,12 @@ bool CaptureThread::isRoMapServer(unsigned int Ip, short int Port) {
 //                 //                short int typei = htons(ro_message_type->Type);
 //                 switch (ro_message_type->Type) {
 //                     /*
-//                 case 0x0069: // ログインデータ 
+//                 case 0x0069: // ログインデータ
 //                     LP_RO_MESSAGE_0069 ro_msg_0069 = (LP_RO_MESSAGE_0069)p;
 //                     printf("Login Success : Len=%d LoginID1=%d AccountID=%d\n",
 //                            ro_msg_0069->Len, ro_msg_0069->LoginId, ro_msg_0069->AccountId);
 //                     break;
-//                 case 0x006B : // キャラデータ 
+//                 case 0x006B : // キャラデータ
 //                     printf("Len=%d\n", ro_msg_006B->Len);
 //                     p += 4;
 //                     for(int i = 106; i < ro_msg_006B->Len; i += 106) {
@@ -497,7 +497,7 @@ bool CaptureThread::isRoMapServer(unsigned int Ip, short int Port) {
 //                         p += 106;
 //                     }
 //                     break;
-//                 case 0x0071 : // キャラ鯖接続データ 
+//                 case 0x0071 : // キャラ鯖接続データ
 //                     p += 2;
 //                     LP_RO_MESSAGE_0071 ro_msg_0071 = (LP_RO_MESSAGE_0071)p;
 //                     unsigned char *ip;
@@ -509,7 +509,7 @@ bool CaptureThread::isRoMapServer(unsigned int Ip, short int Port) {
 //                            ro_msg_0071->CharId, ro_msg_0071->Map, *(ip+0), *(ip+1), *(ip+2), *(ip+3), ro_msg_0071->Port);
 //                     break;
 //                     */
-//                 case 0x02B9 : // ショトカデータ 
+//                 case 0x02B9 : // ショトカデータ
 //                     p += 2;
 //                     for(int i = 0; i < 27; i ++) {
 //                         unsigned char *Flag = (unsigned char *)p;

@@ -49,7 +49,7 @@ END_EVENT_TABLE()
 RoScVPCVDlg::RoScVPCVDlg(wxWindow *parent, wxWindowID id, const wxString &title, const wxPoint &position, const wxSize& size, long style)
 : wxDialog(parent, id, title, position, size, style)
 {
-    // ウィンドウ移動モードをfalseに 
+    // ウィンドウ移動モードをfalseに
     wndMoveMode = false;
 
     PositionX = 0;
@@ -58,16 +58,16 @@ RoScVPCVDlg::RoScVPCVDlg(wxWindow *parent, wxWindowID id, const wxString &title,
     // NICIndexを初期化
     NICIndex = -1;
 
-    // スキンを初期化 
+    // スキンを初期化
     // IniSkin = wxT('');
 
-    // 本体設定の読み込み 
+    // 本体設定の読み込み
     if( !LoadMainIni() ) {
         wxMessageBox(wxT("設定の読み込みに失敗しました。"), wxT("エラー"), wxOK);
         Destroy();
     }
     else {
-        //スキンの読み込み 
+        //スキンの読み込み
         if( !IniSkin.Length() ) {
             IniSkin = GetRegistrySkin();
         }
@@ -77,7 +77,7 @@ RoScVPCVDlg::RoScVPCVDlg(wxWindow *parent, wxWindowID id, const wxString &title,
                 IniSkin = GetRegistrySkin();
             }
         }
-        
+
         if( IniSkin.Length() < 1 ) {
             wxMessageBox(wxT("スキンが見つかりません。"), wxT("エラー"), wxOK);
             Destroy();
@@ -99,8 +99,8 @@ RoScVPCVDlg::RoScVPCVDlg(wxWindow *parent, wxWindowID id, const wxString &title,
                     }
                     CreateGUIControls();
                     WxPopupMenu->Append(wxID_StayOnTop, wxT("(&F)常に最前面に表\示"));
-                    WxPopupMenu->Append(wxID_ChangeSkin, wxT("(&S)スキン変更")); 
-                    WxPopupMenu->Append(wxID_Test, wxT("(&T)テスト")); 
+                    WxPopupMenu->Append(wxID_ChangeSkin, wxT("(&S)スキン変更"));
+                    WxPopupMenu->Append(wxID_Test, wxT("(&T)テスト"));
                     WxPopupMenu->Append(wxID_Close, wxT("(&E)終了"));
                     TestCount = 0;
                 }
@@ -111,7 +111,7 @@ RoScVPCVDlg::RoScVPCVDlg(wxWindow *parent, wxWindowID id, const wxString &title,
 
 RoScVPCVDlg::~RoScVPCVDlg()
 {
-} 
+}
 
 void RoScVPCVDlg::CreateGUIControls()
 {
@@ -123,9 +123,9 @@ void RoScVPCVDlg::CreateGUIControls()
 
 	SetTitle(wxT("RoScVPCV"));
 	SetIcon(wxNullIcon);
-	SetSize(8,8,282,104);
+	SetSize(8,8,282,138);
 	Center();
-	
+
 
 	WxPopupMenu = new wxMenu(wxT(""));
     ////GUI Items Creation End
@@ -141,7 +141,7 @@ void RoScVPCVDlg::OnClose(wxCloseEvent& event)
     Destroy();
 }
 
-/// 常に最前面に表示 
+/// 常に最前面に表示
 void RoScVPCVDlg::ChangeStayOnTop(wxCommandEvent& WXUNUSED(event))
 {
     if( GetWindowStyleFlag() != wxSTAY_ON_TOP ) {
@@ -152,10 +152,10 @@ void RoScVPCVDlg::ChangeStayOnTop(wxCommandEvent& WXUNUSED(event))
     }
 }
 
-// スキン選択ダイアログ 
+// スキン選択ダイアログ
 void RoScVPCVDlg::ChangeSkin(wxCommandEvent& WXUNUSED(event))
 {
-    
+
     if(wxDir::Exists(RoPath + wxT("\\skin\\"))) {
         wxDir dir(RoPath + wxT("\\skin\\"));
         wxString skin;
@@ -172,7 +172,7 @@ void RoScVPCVDlg::ChangeSkin(wxCommandEvent& WXUNUSED(event))
             wxString skins[dir_count];
             int i = 0;
             dir.GetFirst(&skin);
-            
+
             flg = true;
             while(flg) {
                 skins[i] = skin;
@@ -196,7 +196,7 @@ void RoScVPCVDlg::ChangeSkin(wxCommandEvent& WXUNUSED(event))
         }
     }
     //    wxString skin = wxGet;
-    
+
 }
 
 bool RoScVPCVDlg::LoadIni(MyStringHash *hash, wxString File, wxString Section)
@@ -250,7 +250,7 @@ bool RoScVPCVDlg::LoadIni(MyStringHash *hash, wxString File, wxString Section)
 bool RoScVPCVDlg::SaveIni(MyStringHash *hash, wxString File, wxString Section)
 {
     wxLogMessage(wxString::Format(wxT("Save INI : ") + File + wxT(" : ") + Section));
-    
+
     MyStringHash::iterator it;
     for( it = hash->begin(); it != hash->end(); ++it ) {
         wxString key = it->first, value = it->second;
@@ -267,8 +267,8 @@ bool RoScVPCVDlg::LoadMainIni()
     bool rt;
     wxString MainIniFile = wxT(".\\RoScVPCV.ini");
     rt = LoadIni(&MainSetting, MainIniFile.c_str(), wxT("RoScVPCV"));
-    
-    // ロードできなかったら作る 
+
+    // ロードできなかったら作る
     if( !rt ) {
         MainSetting[wxT("RoPath")] = wxT("C:\\Program Files\\Gravity\\RagnarokOnline");
         wxLogMessage(wxT("can not load main ini... generate"));
@@ -308,7 +308,7 @@ bool RoScVPCVDlg::SaveMainIni()
     MainSetting[wxT("RoPath")] = RoPath;
     MainSetting[wxT("NICIndex")] = wxString::Format(wxT("%d"), NICIndex);
     MainSetting[wxT("Skin")] = IniSkin;
-    
+
     if( GetWindowStyleFlag() == wxSTAY_ON_TOP ) {
         MainSetting[wxT("StayOnTop")] = wxT("1");
     }
@@ -317,7 +317,7 @@ bool RoScVPCVDlg::SaveMainIni()
     }
     MainSetting[wxT("PosX")] = wxString::Format(wxT("%d"), PositionX);
     MainSetting[wxT("PosY")] = wxString::Format(wxT("%d"), PositionY);
-    
+
     wxString MainIniFile = wxT(".\\RoScVPCV.ini");
     SaveIni(&MainSetting, MainIniFile.c_str(), wxT("RoScVPCV"));
     return true;
@@ -338,7 +338,7 @@ bool RoScVPCVDlg::LoadItemNameTable(MyStringHash *hash)
         return false;
     }
     wxTextFile file(wxT(".\\idnum2itemdisplaynametable.txt"));
-    
+
     if(!file.Open()) {
         wxMessageBox(wxT("can not open .\\idnum2itemdisplaynametable.txt"), wxT("error"), wxOK);
         return false;
@@ -361,7 +361,7 @@ bool RoScVPCVDlg::LoadItemNameTable(MyStringHash *hash)
             */
         }
     }
-    return true; 
+    return true;
 }
 
 bool RoScVPCVDlg::LoadPacketLength(int *PacketLength, int &Max)
@@ -395,7 +395,7 @@ bool RoScVPCVDlg::LoadPacketLength(int *PacketLength, int &Max)
     return true;
 }
 
-// テスト用関数 
+// テスト用関数
 void RoScVPCVDlg::Test(wxCommandEvent& WXUNUSED(event))
 {
     /*
@@ -420,7 +420,7 @@ void RoScVPCVDlg::Test(wxCommandEvent& WXUNUSED(event))
         wxMessageBox(str, wxT(""), wxOK);
     }
     */
-    
+
     wxString msgstr;
     msgstr.sprintf(wxT("タイプを入力してください。(%d)"), TestCount);
     wxString stype = wxGetTextFromUser(msgstr, wxT("テキスト入力"), wxT(""));
@@ -436,7 +436,7 @@ void RoScVPCVDlg::Test(wxCommandEvent& WXUNUSED(event))
             wxMessageBox(wxT("0か1を入力してください。"), wxT("エラー"), wxOK)   ;
             return;
         }
-        wxString sid = wxGetTextFromUser(msgstr, wxT("テキスト入力"), wxT("")); 
+        wxString sid = wxGetTextFromUser(msgstr, wxT("テキスト入力"), wxT(""));
         long id;
         if(sid.ToLong(&id, 10)) {
             long count;
@@ -451,7 +451,7 @@ void RoScVPCVDlg::Test(wxCommandEvent& WXUNUSED(event))
                 wxMessageBox(sid + wxT("はlongに変換できませんでした。"), wxT("エラー"), wxOK);
                 return;
             }
-            
+
             //            if(ItemList[TestCount]->SetItem(type, id, count)) {
             if(SetShortcutItem(TestCount, type, id, count)) {
                 TestCount ++;
@@ -466,9 +466,9 @@ void RoScVPCVDlg::Test(wxCommandEvent& WXUNUSED(event))
         }
     }
     else {
-        wxMessageBox(stype + wxT("はlongに変換できませんでした。"), wxT("エラー"), wxOK); 
+        wxMessageBox(stype + wxT("はlongに変換できませんでした。"), wxT("エラー"), wxOK);
     }
-    
+
 }
 
 bool RoScVPCVDlg::SetShortcutItem(int item_count, int type, int id, int count)
@@ -477,11 +477,11 @@ bool RoScVPCVDlg::SetShortcutItem(int item_count, int type, int id, int count)
         return false;
     }
     bool isActive = false;
-    // こっちはアイテム 
+    // こっちはアイテム
     if( type == 0 ) {
         isActive = true;
     }
-    // こっちはスキル 
+    // こっちはスキル
     else if( type == 1 ) {
         isActive = SkillIsActive( id, count );
     }
@@ -489,14 +489,14 @@ bool RoScVPCVDlg::SetShortcutItem(int item_count, int type, int id, int count)
 }
 
 
-// アクティブスキルリセット 
+// アクティブスキルリセット
 bool RoScVPCVDlg::ResetActiveSkill()
 {
     ActiveSkills.clear();
     return true;
 }
 
-// アクティブスキルセット 
+// アクティブスキルセット
 bool RoScVPCVDlg::SetActiveSkill(int id, int lv)
 {
     wxString IdStr;
@@ -545,14 +545,14 @@ bool RoScVPCVDlg::SetItemsActive()
     return true;
 }
 
-// 右クリックからの終了 
+// 右クリックからの終了
 void RoScVPCVDlg::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
     /* TODO (#1#): Implement RoScVPCVDlg::OnQuit() */
     Close(true);
 }
 
-// レジストリに登録されているスキンを取得する 
+// レジストリに登録されているスキンを取得する
 wxString RoScVPCVDlg::GetRegistrySkin()
 {
     // HKEY_LOCAL_MACHINE\SOFTWARE\Gravity Soft\Ragnarok\Option\SKINNAME
@@ -560,13 +560,13 @@ wxString RoScVPCVDlg::GetRegistrySkin()
     DWORD result;
     RegCreateKeyEx(HKEY_LOCAL_MACHINE, "Software\\Gravity Soft\\Ragnarok\\Option",
                    0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkey, &result);
-    
+
     TCHAR data[1024] = "";
     DWORD dataSize = (DWORD)sizeof(data);
     DWORD dataTypeSize;
     RegQueryValueEx(hkey, "SKINNAME", NULL, &dataTypeSize, (LPBYTE)&data, &dataSize);
     RegCloseKey(hkey);
-    
+
     wxString Skin = data;
     if( Skin.Length() < 1 ) {
         Skin = wxT("default");
@@ -575,12 +575,12 @@ wxString RoScVPCVDlg::GetRegistrySkin()
     return Skin;
 }
 
-// 引数->default->足元の順でスキンをロードする 
+// 引数->default->足元の順でスキンをロードする
 bool RoScVPCVDlg::LoadSkin(wxString Skin)
 {
     wxLogMessage(wxT("Load Skin : ") + RoPath + wxT("\\skin\\") + Skin + wxT("\\basic_interface\\shortitem_bg.bmp"));
     // RoPath + \skin\ + skin + \basic_interface\shortitem_bg.bmp
-    
+
     wxString tSkinPath = RoPath + wxT("\\skin\\") + Skin + wxT("\\basic_interface\\shortitem_bg.bmp");
 
 //    wxMessageBox(SkinPath, wxT("SkinPath"), wxOK);
@@ -595,18 +595,18 @@ bool RoScVPCVDlg::LoadSkin(wxString Skin)
         }
     }
     SkinPath = tSkinPath;
-    
+
     bgbmp = new wxBitmap;
     if ( !bgbmp->LoadFile(SkinPath, wxBITMAP_TYPE_BMP) ) {
         return false;
     }
     wxMask *bgmask = new wxMask(*bgbmp, wxColor(0xff,0x00,0xff));
     bgbmp->SetMask(bgmask);
-    
+
     return true;
 }
 
-// 右クリックメニューを呼び出し 
+// 右クリックメニューを呼び出し
 void RoScVPCVDlg::RoScVPCVDlgRightDown(wxMouseEvent& event)
 {
     // insert your code here
@@ -614,7 +614,7 @@ void RoScVPCVDlg::RoScVPCVDlgRightDown(wxMouseEvent& event)
     PopupMenu(WxPopupMenu, event.GetX(), event.GetY() );
 }
 
-// ウィンドウ移動モードOn 
+// ウィンドウ移動モードOn
 void RoScVPCVDlg::RoScVPCVDlgLeftDown(wxMouseEvent& event)
 {
     // insert your code here
@@ -623,14 +623,14 @@ void RoScVPCVDlg::RoScVPCVDlgLeftDown(wxMouseEvent& event)
     last_y = event.GetY();
 }
 
-// ウィンドウ移動モードOFF 
+// ウィンドウ移動モードOFF
 void RoScVPCVDlg::RoScVPCVDlgLeftUP(wxMouseEvent& event)
 {
     // insert your code here
     wndMoveMode = false;
 }
 
-// マウスの移動を検地。ウィンドウ移動モードだったらウィンドウを動かす 
+// マウスの移動を検地。ウィンドウ移動モードだったらウィンドウを動かす
 void RoScVPCVDlg::RoScVPCVDlgMouseEvents(wxMouseEvent& event)
 {
     // insert your code here
@@ -647,18 +647,18 @@ void RoScVPCVDlg::RoScVPCVDlgMouseEvents(wxMouseEvent& event)
     }
 }
 
-// 描画関数 
+// 描画関数
 void RoScVPCVDlg::RoScVPCVDlgPaint(wxPaintEvent& event)
 {
     // insert your code here
     wxPaintDC dc(this);
     dc.SetFont(wxFont(8,wxDEFAULT,wxNORMAL,wxNORMAL,false));
-    
+
     dc.DrawBitmap(*bgbmp, 0,   0,  true);
     dc.DrawBitmap(*bgbmp, 0,   34, true);
     dc.DrawBitmap(*bgbmp, 0,   68, true);
     dc.DrawBitmap(*bgbmp, 0,   102, true);
-    
+
     dc.SetTextForeground(wxColour(0x77, 0x77, 0x77));
     for( int x = -1; x < 2; x ++ ) {
         for( int y = -1; y < 2; y ++ ) {
@@ -673,7 +673,7 @@ void RoScVPCVDlg::RoScVPCVDlgPaint(wxPaintEvent& event)
     dc.DrawText(wxT("3"), 268, 47);
     dc.DrawText(wxT("2"), 268, 81);
     dc.DrawText(wxT("1"), 268, 115);
-    
+
     for( int i = 0; i < 36; i ++ ) {
         ItemList[i]->Draw(&dc);
     }

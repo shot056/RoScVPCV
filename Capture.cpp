@@ -7,27 +7,27 @@
 
 
 
-// Winsock初期化用構造体 
+// Winsock初期化用構造体
 WSADATA wsd;
-// WinSock2が使用可能かどうかのフラグ 
+// WinSock2が使用可能かどうかのフラグ
 static BOOL WinSock2 = FALSE;
-// ソケットハンドル 
+// ソケットハンドル
 static SOCKET sock=-1;
 
 //---------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------
-// WinSockの初期化 
+// WinSockの初期化
 //---------------------------------------------------------------------------
 BOOL Startup(void)
 {
-    //Ver2.0 でWinSockを初期化する 
+    //Ver2.0 でWinSockを初期化する
     if(0==WSAStartup(MAKEWORD(2,0),&wsd))
         WinSock2 = TRUE;
     return WinSock2;
 }
 //---------------------------------------------------------------------------
-//WinSockの終了処理 
+//WinSockの終了処理
 //---------------------------------------------------------------------------
 BOOL Cleanup(void)
 {
@@ -40,7 +40,7 @@ BOOL Cleanup(void)
     return TRUE;
 }
 //---------------------------------------------------------------------------
-// アダプタの一覧取得 
+// アダプタの一覧取得
 //---------------------------------------------------------------------------
 BOOL EnumAdapter(unsigned long AddressList[MAX_ADAPTER],int *max)
 {
@@ -50,13 +50,13 @@ BOOL EnumAdapter(unsigned long AddressList[MAX_ADAPTER],int *max)
     SOCKET_ADDRESS_LIST *slist;
     *max=0;
 
-    // WinSock2の初期化が完了していない場合は、処理を継続できない 
+    // WinSock2の初期化が完了していない場合は、処理を継続できない
     if(!WinSock2){
         SetLastError(ERROR_WINSOCK2_INIT);
         return FALSE;
     }
 
-    // ソケットが使用中の場合は、処理を継続できない 
+    // ソケットが使用中の場合は、処理を継続できない
     if(sock!=-1){
         SetLastError(ERROR_SOCKET_BUSY);
         return Ret;
@@ -90,7 +90,7 @@ BOOL EnumAdapter(unsigned long AddressList[MAX_ADAPTER],int *max)
 }
 
 //---------------------------------------------------------------------------
-//キャプチャー開始 
+//キャプチャー開始
 //---------------------------------------------------------------------------
 BOOL Start(unsigned long ip_address)
 {
@@ -98,25 +98,25 @@ BOOL Start(unsigned long ip_address)
     unsigned long optval;
     SOCKADDR_IN   addr_in;
 
-    // WinSock2の初期化が完了していない場合は、処理を継続できない 
+    // WinSock2の初期化が完了していない場合は、処理を継続できない
     if(!WinSock2){
         SetLastError(ERROR_WINSOCK2_INIT);
         return FALSE;
     }
 
-    // ソケットが使用中の場合は、処理を継続できない 
+    // ソケットが使用中の場合は、処理を継続できない
     if(sock!=-1){
         SetLastError(ERROR_SOCKET_BUSY);
         return FALSE;
     }
 
-    //SOCKETの生成 
+    //SOCKETの生成
     if( INVALID_SOCKET == (sock = socket(AF_INET,SOCK_RAW,IPPROTO_IP))){
         SetLastError(ERROR_WSASOCKET);
         goto end;
     }
 
-    //SOCKET のデータセット 
+    //SOCKET のデータセット
     addr_in.sin_addr.s_addr=ip_address;
     addr_in.sin_family = AF_INET;
     addr_in.sin_port = htons(0);
@@ -130,7 +130,7 @@ BOOL Start(unsigned long ip_address)
     }
 
 
-    // プロミスキャスモードの\設定 
+    // プロミスキャスモードの\設定
     #define SIO_RCVALL _WSAIOW(IOC_VENDOR,1)
     //#define SIO_RCVALL  0x98000001
     optval=1; //PROMISC
@@ -139,7 +139,7 @@ BOOL Start(unsigned long ip_address)
         goto end;
     }
 
-    // 非ブロッキングモードの\設定 
+    // 非ブロッキングモードの\設定
     unsigned long arg;
     arg = 1L;
     if(0!=ioctlsocket(sock,FIONBIO,&arg)){
@@ -154,17 +154,17 @@ end:
     return Ret;
 }
 //---------------------------------------------------------------------------
-// キャプチャー終了 
+// キャプチャー終了
 //---------------------------------------------------------------------------
 BOOL Stop(void)
 {
-    // WinSock2の初期化が完了していない場合は、処理を継続できない 
+    // WinSock2の初期化が完了していない場合は、処理を継続できない
     if(!WinSock2){
         SetLastError(ERROR_WINSOCK2_INIT);
         return FALSE;
     }
 
-    // ソケットの準備ができていない場合は、処理を継続できない 
+    // ソケットの準備ができていない場合は、処理を継続できない
     if(sock==-1){
         SetLastError(ERROR_SOCKET);
         return FALSE;
@@ -177,24 +177,24 @@ BOOL Stop(void)
 
 
 //---------------------------------------------------------------------------
-// パケット受信 
+// パケット受信
 //---------------------------------------------------------------------------
 BOOL Recv(unsigned char Buffer[MAX_RECV_SIZE],unsigned long *Len)
 {
-    // WinSock2の初期化が完了していない場合は、処理を継続できない 
+    // WinSock2の初期化が完了していない場合は、処理を継続できない
     if(!WinSock2){
         SetLastError(ERROR_WINSOCK2_INIT);
         return FALSE;
     }
 
-    // ソケットの準備ができていない場合は、処理を継続できない 
+    // ソケットの準備ができていない場合は、処理を継続できない
     if(sock==-1){
         SetLastError(ERROR_SOCKET);
         return FALSE;
     }
 
     if(SOCKET_ERROR==(*Len = recv(sock,(char *)Buffer,MAX_RECV_SIZE,0))){
-        DWORD Error =WSAGetLastError();
+        DWORD Error = WSAGetLastError();
         if(Error==WSAEWOULDBLOCK){
             *Len=0;
             return TRUE;
